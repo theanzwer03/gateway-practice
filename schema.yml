@@ -6,6 +6,7 @@ paths:
   /api/auth/token/:
     post:
       operationId: api_auth_token_create
+      description: Issue a DRF token and return the authenticated user's client profile.
       tags:
       - api
       requestBody:
@@ -28,7 +29,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/AuthToken'
+                $ref: '#/components/schemas/ClientLoginResponse'
           description: ''
   /api/clients/:
     get:
@@ -1021,6 +1022,21 @@ components:
       - customer_name
       - id
       - updated_at
+      - user
+    ClientLoginResponse:
+      type: object
+      properties:
+        token:
+          type: string
+        user:
+          $ref: '#/components/schemas/User'
+        client:
+          allOf:
+          - $ref: '#/components/schemas/Client'
+          nullable: true
+      required:
+      - client
+      - token
       - user
     Customer:
       type: object
