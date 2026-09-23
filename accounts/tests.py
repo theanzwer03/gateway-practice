@@ -1,4 +1,5 @@
 from django.test import TestCase
+from rest_framework.authtoken.models import Token
 from rest_framework.test import APIClient
 
 from customers.models import Client, Customer
@@ -51,3 +52,36 @@ class ClientLoginTests(TestCase):
         self.assertIn("token", response.data)
         self.assertEqual(response.data["user"]["id"], str(self.user.id))
         self.assertEqual(response.data["client"]["id"], str(self.client_profile.id))
+
+
+class CurrentUserTests(TestCase):
+    def setUp(self):
+        self.user = User.objects.create_user(
+            username="current-user",
+            email="current@example.com",
+            password="strong-pass-123",
+            first_name="Current",
+            last_name="User",
+            role=User.Role.CLIENT,
+        )
+
+    def test_authenticated_user_can_get_their_details(self):
+        token = Token.objects.create(user=self.user)
+        client = APIClient()
+        client.credentials(HTTP_AUTHORIZATION=f"Token {token.key}")
+
+        response = client.get("/api/auth/me/")
+
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.data["id"], str(self.user.id))
+        self.assertEqual(response.data["username"], "current-user")
+        self.assertEqual(response.data["email"], "current@example.com")
+        self.assertEqual(response.data["first_name"], "Current")
+        self.assertEqual(response.data["last_name"], "User")
+        self.assertEqual(response.data["role"], User.Role.CLIENT)
+        self.assertNotIn("password", response.data)
+
+    def test_unauthenticated_request_is_rejected(self):
+        response = APIClient().get("/api/auth/me/")
+
+        self.assertEqual(response.status_code, 401)

@@ -3,6 +3,8 @@ from rest_framework import serializers
 from rest_framework.authtoken.models import Token
 from rest_framework.authtoken.serializers import AuthTokenSerializer
 from rest_framework.authtoken.views import ObtainAuthToken
+from rest_framework.generics import RetrieveAPIView
+from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 
 from customers.serializers import ClientSerializer
@@ -37,4 +39,15 @@ class ClientObtainAuthToken(ObtainAuthToken):
         })
 
 
+class CurrentUserView(RetrieveAPIView):
+    """Return details for the authenticated user."""
+
+    serializer_class = UserSerializer
+    permission_classes = [IsAuthenticated]
+
+    def get_object(self):
+        return self.request.user
+
+
 obtain_client_auth_token = ClientObtainAuthToken.as_view()
+current_user = CurrentUserView.as_view()
