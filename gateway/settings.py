@@ -73,3 +73,17 @@ REST_FRAMEWORK = {
     "PAGE_SIZE": 25,
 }
 SPECTACULAR_SETTINGS = {"TITLE": "Gateway API", "VERSION": "1.0.0", "SERVE_INCLUDE_SCHEMA": False}
+
+EMAIL_BACKEND = os.environ.get("EMAIL_BACKEND", "django.core.mail.backends.console.EmailBackend")
+EMAIL_HOST = os.environ.get("EMAIL_HOST", "localhost")
+EMAIL_PORT = int(os.environ.get("EMAIL_PORT", "587"))
+EMAIL_HOST_USER = os.environ.get("EMAIL_HOST_USER", "")
+EMAIL_HOST_PASSWORD = os.environ.get("EMAIL_HOST_PASSWORD", "")
+EMAIL_USE_TLS = os.environ.get("EMAIL_USE_TLS", "true").lower() == "true"
+EMAIL_USE_SSL = os.environ.get("EMAIL_USE_SSL", "false").lower() == "true"
+EMAIL_TIMEOUT = 10
+DEFAULT_FROM_EMAIL = os.environ.get("DEFAULT_FROM_EMAIL", "Gateway <noreply@example.com>")
+EMAIL_VERIFICATION_URL = os.environ.get("EMAIL_VERIFICATION_URL", "http://localhost:3000/verify-email")
+PASSWORD_RESET_URL = os.environ.get("PASSWORD_RESET_URL", "http://localhost:3000/reset-password")
+EMAIL_VERIFICATION_TIMEOUT = int(os.environ.get("EMAIL_VERIFICATION_TIMEOUT", "86400"))
+PASSWORD_RESET_TIMEOUT = int(os.environ.get("PASSWORD_RESET_TIMEOUT", "3600"))

@@ -3,6 +3,32 @@ info:
   title: Gateway API
   version: 1.0.0
 paths:
+  /api/auth/forgot-password/:
+    post:
+      operationId: api_auth_forgot_password_create
+      tags:
+      - api
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Email'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/Email'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/Email'
+        required: true
+      security:
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Detail'
+          description: ''
   /api/auth/login/:
     post:
       operationId: api_auth_login_create
@@ -47,6 +73,102 @@ paths:
               schema:
                 $ref: '#/components/schemas/User'
           description: ''
+  /api/auth/register/:
+    post:
+      operationId: api_auth_register_create
+      tags:
+      - api
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Registration'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/Registration'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/Registration'
+        required: true
+      security:
+      - {}
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Detail'
+          description: ''
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Detail'
+          description: ''
+        '503':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Detail'
+          description: ''
+  /api/auth/resend-verification/:
+    post:
+      operationId: api_auth_resend_verification_create
+      tags:
+      - api
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Email'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/Email'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/Email'
+        required: true
+      security:
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Detail'
+          description: ''
+  /api/auth/reset-password/:
+    post:
+      operationId: api_auth_reset_password_create
+      tags:
+      - api
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ResetPassword'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/ResetPassword'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/ResetPassword'
+        required: true
+      security:
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Detail'
+          description: ''
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Detail'
+          description: ''
   /api/auth/token/:
     post:
       operationId: api_auth_token_create
@@ -74,6 +196,38 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ClientLoginResponse'
+          description: ''
+  /api/auth/verify-email/:
+    post:
+      operationId: api_auth_verify_email_create
+      tags:
+      - api
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Verification'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/Verification'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/Verification'
+        required: true
+      security:
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Detail'
+          description: ''
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Detail'
           description: ''
   /api/clients/:
     get:
@@ -1130,6 +1284,21 @@ components:
         * `active` - Active
         * `inactive` - Inactive
         * `suspended` - Suspended
+    Detail:
+      type: object
+      properties:
+        detail:
+          type: string
+      required:
+      - detail
+    Email:
+      type: object
+      properties:
+        email:
+          type: string
+          format: email
+      required:
+      - email
     Invoice:
       type: object
       properties:
@@ -1564,6 +1733,9 @@ components:
           type: string
           format: email
           maxLength: 254
+        email_verified:
+          type: boolean
+          readOnly: true
         first_name:
           type: string
           maxLength: 150
@@ -1656,6 +1828,49 @@ components:
         * `failed` - Failed
         * `refunded` - Refunded
         * `canceled` - Canceled
+    Registration:
+      type: object
+      properties:
+        username:
+          type: string
+          description: Required. 150 characters or fewer. Letters, digits and @/./+/-/_
+            only.
+          pattern: ^[\w.@+-]+$
+          maxLength: 150
+        email:
+          type: string
+          format: email
+          maxLength: 254
+        password:
+          type: string
+          writeOnly: true
+          minLength: 8
+        first_name:
+          type: string
+          maxLength: 150
+        last_name:
+          type: string
+          maxLength: 150
+      required:
+      - email
+      - password
+      - username
+    ResetPassword:
+      type: object
+      properties:
+        uid:
+          type: string
+          maxLength: 100
+        token:
+          type: string
+          maxLength: 200
+        new_password:
+          type: string
+          writeOnly: true
+      required:
+      - new_password
+      - token
+      - uid
     RoleEnum:
       enum:
       - admin
@@ -1754,6 +1969,9 @@ components:
           type: string
           format: email
           maxLength: 254
+        email_verified:
+          type: boolean
+          readOnly: true
         first_name:
           type: string
           maxLength: 150
@@ -1782,9 +2000,18 @@ components:
       required:
       - created_at
       - email
+      - email_verified
       - id
       - updated_at
       - username
+    Verification:
+      type: object
+      properties:
+        token:
+          type: string
+          maxLength: 2048
+      required:
+      - token
   securitySchemes:
     cookieAuth:
       type: apiKey
