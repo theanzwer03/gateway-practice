@@ -3,6 +3,50 @@ info:
   title: Gateway API
   version: 1.0.0
 paths:
+  /api/auth/admin/login/:
+    post:
+      operationId: api_auth_admin_login_create
+      tags:
+      - api
+      requestBody:
+        content:
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/AuthToken'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/AuthToken'
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AuthToken'
+        required: true
+      security:
+      - clientTokenAuth: []
+      - tokenAuth: []
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AdminLoginResponse'
+          description: ''
+  /api/auth/admin/me/:
+    get:
+      operationId: api_auth_admin_me_retrieve
+      tags:
+      - api
+      security:
+      - clientTokenAuth: []
+      - tokenAuth: []
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+          description: ''
   /api/auth/forgot-password/:
     post:
       operationId: api_auth_forgot_password_create
@@ -32,24 +76,22 @@ paths:
   /api/auth/login/:
     post:
       operationId: api_auth_login_create
-      description: Issue a DRF token and return the authenticated user's client profile.
       tags:
       - api
       requestBody:
         content:
-          application/x-www-form-urlencoded:
-            schema:
-              $ref: '#/components/schemas/AuthToken'
-          multipart/form-data:
-            schema:
-              $ref: '#/components/schemas/AuthToken'
           application/json:
             schema:
-              $ref: '#/components/schemas/AuthToken'
+              $ref: '#/components/schemas/ClientLogin'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/ClientLogin'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/ClientLogin'
         required: true
       security:
-      - tokenAuth: []
-      - cookieAuth: []
+      - {}
       responses:
         '200':
           content:
@@ -60,10 +102,10 @@ paths:
   /api/auth/me/:
     get:
       operationId: api_auth_me_retrieve
-      description: Return details for the authenticated user.
       tags:
       - api
       security:
+      - clientTokenAuth: []
       - tokenAuth: []
       - cookieAuth: []
       responses:
@@ -71,7 +113,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/User'
+                $ref: '#/components/schemas/Client'
           description: ''
   /api/auth/register/:
     post:
@@ -172,7 +214,6 @@ paths:
   /api/auth/token/:
     post:
       operationId: api_auth_token_create
-      description: Issue a DRF token and return the authenticated user's client profile.
       tags:
       - api
       requestBody:
@@ -188,6 +229,7 @@ paths:
               $ref: '#/components/schemas/AuthToken'
         required: true
       security:
+      - clientTokenAuth: []
       - tokenAuth: []
       - cookieAuth: []
       responses:
@@ -195,7 +237,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ClientLoginResponse'
+                $ref: '#/components/schemas/AdminLoginResponse'
           description: ''
   /api/auth/verify-email/:
     post:
@@ -242,6 +284,7 @@ paths:
       tags:
       - api
       security:
+      - clientTokenAuth: []
       - tokenAuth: []
       - cookieAuth: []
       responses:
@@ -268,6 +311,7 @@ paths:
               $ref: '#/components/schemas/Client'
         required: true
       security:
+      - clientTokenAuth: []
       - tokenAuth: []
       - cookieAuth: []
       responses:
@@ -291,6 +335,7 @@ paths:
       tags:
       - api
       security:
+      - clientTokenAuth: []
       - tokenAuth: []
       - cookieAuth: []
       responses:
@@ -325,6 +370,7 @@ paths:
               $ref: '#/components/schemas/Client'
         required: true
       security:
+      - clientTokenAuth: []
       - tokenAuth: []
       - cookieAuth: []
       responses:
@@ -358,6 +404,7 @@ paths:
             schema:
               $ref: '#/components/schemas/PatchedClient'
       security:
+      - clientTokenAuth: []
       - tokenAuth: []
       - cookieAuth: []
       responses:
@@ -380,6 +427,7 @@ paths:
       tags:
       - api
       security:
+      - clientTokenAuth: []
       - tokenAuth: []
       - cookieAuth: []
       responses:
@@ -398,6 +446,7 @@ paths:
       tags:
       - api
       security:
+      - clientTokenAuth: []
       - tokenAuth: []
       - cookieAuth: []
       responses:
@@ -424,6 +473,7 @@ paths:
               $ref: '#/components/schemas/Customer'
         required: true
       security:
+      - clientTokenAuth: []
       - tokenAuth: []
       - cookieAuth: []
       responses:
@@ -447,6 +497,7 @@ paths:
       tags:
       - api
       security:
+      - clientTokenAuth: []
       - tokenAuth: []
       - cookieAuth: []
       responses:
@@ -481,6 +532,7 @@ paths:
               $ref: '#/components/schemas/Customer'
         required: true
       security:
+      - clientTokenAuth: []
       - tokenAuth: []
       - cookieAuth: []
       responses:
@@ -514,6 +566,7 @@ paths:
             schema:
               $ref: '#/components/schemas/PatchedCustomer'
       security:
+      - clientTokenAuth: []
       - tokenAuth: []
       - cookieAuth: []
       responses:
@@ -536,6 +589,7 @@ paths:
       tags:
       - api
       security:
+      - clientTokenAuth: []
       - tokenAuth: []
       - cookieAuth: []
       responses:
@@ -554,6 +608,7 @@ paths:
       tags:
       - api
       security:
+      - clientTokenAuth: []
       - tokenAuth: []
       - cookieAuth: []
       responses:
@@ -580,6 +635,7 @@ paths:
               $ref: '#/components/schemas/Invoice'
         required: true
       security:
+      - clientTokenAuth: []
       - tokenAuth: []
       - cookieAuth: []
       responses:
@@ -603,6 +659,7 @@ paths:
       tags:
       - api
       security:
+      - clientTokenAuth: []
       - tokenAuth: []
       - cookieAuth: []
       responses:
@@ -637,6 +694,7 @@ paths:
               $ref: '#/components/schemas/Invoice'
         required: true
       security:
+      - clientTokenAuth: []
       - tokenAuth: []
       - cookieAuth: []
       responses:
@@ -670,6 +728,7 @@ paths:
             schema:
               $ref: '#/components/schemas/PatchedInvoice'
       security:
+      - clientTokenAuth: []
       - tokenAuth: []
       - cookieAuth: []
       responses:
@@ -692,6 +751,7 @@ paths:
       tags:
       - api
       security:
+      - clientTokenAuth: []
       - tokenAuth: []
       - cookieAuth: []
       responses:
@@ -710,6 +770,7 @@ paths:
       tags:
       - api
       security:
+      - clientTokenAuth: []
       - tokenAuth: []
       - cookieAuth: []
       responses:
@@ -736,6 +797,7 @@ paths:
               $ref: '#/components/schemas/Payment'
         required: true
       security:
+      - clientTokenAuth: []
       - tokenAuth: []
       - cookieAuth: []
       responses:
@@ -759,6 +821,7 @@ paths:
       tags:
       - api
       security:
+      - clientTokenAuth: []
       - tokenAuth: []
       - cookieAuth: []
       responses:
@@ -793,6 +856,7 @@ paths:
               $ref: '#/components/schemas/Payment'
         required: true
       security:
+      - clientTokenAuth: []
       - tokenAuth: []
       - cookieAuth: []
       responses:
@@ -826,6 +890,7 @@ paths:
             schema:
               $ref: '#/components/schemas/PatchedPayment'
       security:
+      - clientTokenAuth: []
       - tokenAuth: []
       - cookieAuth: []
       responses:
@@ -848,6 +913,7 @@ paths:
       tags:
       - api
       security:
+      - clientTokenAuth: []
       - tokenAuth: []
       - cookieAuth: []
       responses:
@@ -866,6 +932,7 @@ paths:
       tags:
       - api
       security:
+      - clientTokenAuth: []
       - tokenAuth: []
       - cookieAuth: []
       responses:
@@ -892,6 +959,7 @@ paths:
               $ref: '#/components/schemas/Transaction'
         required: true
       security:
+      - clientTokenAuth: []
       - tokenAuth: []
       - cookieAuth: []
       responses:
@@ -915,6 +983,7 @@ paths:
       tags:
       - api
       security:
+      - clientTokenAuth: []
       - tokenAuth: []
       - cookieAuth: []
       responses:
@@ -949,6 +1018,7 @@ paths:
               $ref: '#/components/schemas/Transaction'
         required: true
       security:
+      - clientTokenAuth: []
       - tokenAuth: []
       - cookieAuth: []
       responses:
@@ -982,6 +1052,7 @@ paths:
             schema:
               $ref: '#/components/schemas/PatchedTransaction'
       security:
+      - clientTokenAuth: []
       - tokenAuth: []
       - cookieAuth: []
       responses:
@@ -1004,6 +1075,7 @@ paths:
       tags:
       - api
       security:
+      - clientTokenAuth: []
       - tokenAuth: []
       - cookieAuth: []
       responses:
@@ -1022,6 +1094,7 @@ paths:
       tags:
       - api
       security:
+      - clientTokenAuth: []
       - tokenAuth: []
       - cookieAuth: []
       responses:
@@ -1048,6 +1121,7 @@ paths:
               $ref: '#/components/schemas/User'
         required: true
       security:
+      - clientTokenAuth: []
       - tokenAuth: []
       - cookieAuth: []
       responses:
@@ -1071,6 +1145,7 @@ paths:
       tags:
       - api
       security:
+      - clientTokenAuth: []
       - tokenAuth: []
       - cookieAuth: []
       responses:
@@ -1105,6 +1180,7 @@ paths:
               $ref: '#/components/schemas/User'
         required: true
       security:
+      - clientTokenAuth: []
       - tokenAuth: []
       - cookieAuth: []
       responses:
@@ -1138,6 +1214,7 @@ paths:
             schema:
               $ref: '#/components/schemas/PatchedUser'
       security:
+      - clientTokenAuth: []
       - tokenAuth: []
       - cookieAuth: []
       responses:
@@ -1160,6 +1237,7 @@ paths:
       tags:
       - api
       security:
+      - clientTokenAuth: []
       - tokenAuth: []
       - cookieAuth: []
       responses:
@@ -1167,6 +1245,16 @@ paths:
           description: No response body
 components:
   schemas:
+    AdminLoginResponse:
+      type: object
+      properties:
+        token:
+          type: string
+        user:
+          $ref: '#/components/schemas/User'
+      required:
+      - token
+      - user
     AuthToken:
       type: object
       properties:
@@ -1190,14 +1278,38 @@ components:
           type: string
           format: uuid
           readOnly: true
-        user:
-          $ref: '#/components/schemas/User'
-        customer:
+        username:
           type: string
-          format: uuid
+          maxLength: 150
+        email:
+          type: string
+          format: email
+          maxLength: 254
+        first_name:
+          type: string
+          maxLength: 150
+        last_name:
+          type: string
+          maxLength: 150
+        password:
+          type: string
+          writeOnly: true
+          minLength: 8
+        email_verified:
+          type: boolean
+          readOnly: true
+        is_active:
+          type: boolean
+        customers:
+          type: array
+          items:
+            type: string
+            format: uuid
+          readOnly: true
         customer_name:
           type: string
-          readOnly: true
+          writeOnly: true
+          maxLength: 255
         job_title:
           type: string
           maxLength: 100
@@ -1216,26 +1328,35 @@ components:
           readOnly: true
       required:
       - created_at
-      - customer
-      - customer_name
+      - customers
+      - email
+      - email_verified
       - id
+      - password
       - updated_at
-      - user
+      - username
+    ClientLogin:
+      type: object
+      properties:
+        email:
+          type: string
+          format: email
+        password:
+          type: string
+          writeOnly: true
+      required:
+      - email
+      - password
     ClientLoginResponse:
       type: object
       properties:
         token:
           type: string
-        user:
-          $ref: '#/components/schemas/User'
         client:
-          allOf:
-          - $ref: '#/components/schemas/Client'
-          nullable: true
+          $ref: '#/components/schemas/Client'
       required:
       - client
       - token
-      - user
     Customer:
       type: object
       properties:
@@ -1518,14 +1639,38 @@ components:
           type: string
           format: uuid
           readOnly: true
-        user:
-          $ref: '#/components/schemas/User'
-        customer:
+        username:
           type: string
-          format: uuid
+          maxLength: 150
+        email:
+          type: string
+          format: email
+          maxLength: 254
+        first_name:
+          type: string
+          maxLength: 150
+        last_name:
+          type: string
+          maxLength: 150
+        password:
+          type: string
+          writeOnly: true
+          minLength: 8
+        email_verified:
+          type: boolean
+          readOnly: true
+        is_active:
+          type: boolean
+        customers:
+          type: array
+          items:
+            type: string
+            format: uuid
+          readOnly: true
         customer_name:
           type: string
-          readOnly: true
+          writeOnly: true
+          maxLength: 255
         job_title:
           type: string
           maxLength: 100
@@ -1733,9 +1878,6 @@ components:
           type: string
           format: email
           maxLength: 254
-        email_verified:
-          type: boolean
-          readOnly: true
         first_name:
           type: string
           maxLength: 150
@@ -1833,9 +1975,6 @@ components:
       properties:
         username:
           type: string
-          description: Required. 150 characters or fewer. Letters, digits and @/./+/-/_
-            only.
-          pattern: ^[\w.@+-]+$
           maxLength: 150
         email:
           type: string
@@ -1851,6 +1990,13 @@ components:
         last_name:
           type: string
           maxLength: 150
+        customer_name:
+          type: string
+          writeOnly: true
+          maxLength: 255
+        phone:
+          type: string
+          maxLength: 32
       required:
       - email
       - password
@@ -1874,11 +2020,8 @@ components:
     RoleEnum:
       enum:
       - admin
-      - client
       type: string
-      description: |-
-        * `admin` - Admin
-        * `client` - Client
+      description: '* `admin` - Admin'
     Transaction:
       type: object
       properties:
@@ -1969,9 +2112,6 @@ components:
           type: string
           format: email
           maxLength: 254
-        email_verified:
-          type: boolean
-          readOnly: true
         first_name:
           type: string
           maxLength: 150
@@ -2000,7 +2140,6 @@ components:
       required:
       - created_at
       - email
-      - email_verified
       - id
       - updated_at
       - username
@@ -2013,6 +2152,11 @@ components:
       required:
       - token
   securitySchemes:
+    clientTokenAuth:
+      type: apiKey
+      in: header
+      name: Authorization
+      description: ClientToken <token>
     cookieAuth:
       type: apiKey
       in: cookie

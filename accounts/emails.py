@@ -8,7 +8,7 @@ from django.utils.encoding import force_bytes
 from django.utils.http import urlsafe_base64_encode
 
 
-VERIFICATION_SALT = "accounts.email-verification"
+VERIFICATION_SALT = "clients.email-verification"
 
 
 def email_link(base_url, **parameters):
@@ -20,7 +20,7 @@ def email_link(base_url, **parameters):
 
 def send_verification_email(user):
     token = signing.dumps(
-        {"user_id": str(user.pk), "email": user.email}, salt=VERIFICATION_SALT
+        {"client_id": str(user.pk), "email": user.email}, salt=VERIFICATION_SALT
     )
     link = email_link(settings.EMAIL_VERIFICATION_URL, token=token)
     send_mail(

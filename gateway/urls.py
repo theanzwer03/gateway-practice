@@ -2,7 +2,7 @@ from django.contrib import admin
 from django.urls import include, path
 from drf_spectacular.views import SpectacularAPIView, SpectacularSwaggerView
 
-from accounts.auth_views import current_user, obtain_client_auth_token
+from accounts.auth_views import current_user, current_client, obtain_client_auth_token, obtain_admin_auth_token
 from accounts.email_auth import (
     ForgotPasswordView, RegisterView, ResendVerificationView,
     ResetPasswordView, VerifyEmailView,
@@ -10,9 +10,11 @@ from accounts.email_auth import (
 
 urlpatterns = [
     path("admin/", admin.site.urls),
-    path("api/auth/token/", obtain_client_auth_token, name="api-token"),
+    path("api/auth/token/", obtain_admin_auth_token, name="api-token"),
+    path("api/auth/admin/login/", obtain_admin_auth_token, name="admin-login"),
     path("api/auth/login/", obtain_client_auth_token, name="api-login"),
-    path("api/auth/me/", current_user, name="current-user"),
+    path("api/auth/me/", current_client, name="current-client"),
+    path("api/auth/admin/me/", current_user, name="current-user"),
     path("api/auth/register/", RegisterView.as_view(), name="register"),
     path("api/auth/verify-email/", VerifyEmailView.as_view(), name="verify-email"),
     path("api/auth/resend-verification/", ResendVerificationView.as_view(), name="resend-verification"),

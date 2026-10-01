@@ -1,8 +1,9 @@
+import secrets
 import uuid
 
-from django.conf import settings
-from django.core.exceptions import ValidationError
+from django.contrib.auth.base_user import AbstractBaseUser
 from django.db import models
+from django.db.models.functions import Lower
 
 
 class Customer(models.Model):
@@ -29,10 +30,15 @@ class Customer(models.Model):
         return self.name
 
 
-class Client(models.Model):
+class Client(AbstractBaseUser):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
-    user = models.OneToOneField(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name="client_profile")
-    customer = models.ForeignKey(Customer, on_delete=models.CASCADE, related_name="clients")
+    username = models.CharField(max_length=150, unique=True)
+    email = models.EmailField(unique=True)
+    first_name = models.CharField(max_length=150, blank=True)
+    last_name = models.CharField(max_length=150, blank=True)
+    is_active = models.BooleanField(default=True)
+    email_verified = models.BooleanField(default=False)
+    customers = models.ManyToManyField(Customer, related_name="clients", blank=True)
     job_title = models.CharField(max_length=100, blank=True)
     phone = models.CharField(max_length=32, blank=True)
     is_primary_contact = models.BooleanField(default=False)
@@ -40,11 +46,22 @@ class Client(models.Model):
     updated_at = models.DateTimeField(auto_now=True)
 
     class Meta:
-        ordering = ["customer__name", "user__email"]
+        ordering = ["email"]
+        constraints = [models.UniqueConstraint(Lower("email"), name="client_email_case_insensitive_unique")]
 
-    def clean(self):
-        if self.user_id and self.user.role != "client":
-            raise ValidationError({"user": "A client profile must reference a user with the client role."})
+    USERNAME_FIELD = "email"
+    is_staff = False
+    is_superuser = False
 
     def __str__(self):
-        return f"{self.user.email} ({self.customer.name})"
+        return self.email
+
+
+def generate_client_token():
+    return secrets.token_hex(20)
+
+
+class ClientToken(models.Model):
+    key = models.CharField(max_length=40, primary_key=True, default=generate_client_token, editable=False)
+    client = models.OneToOneField(Client, on_delete=models.CASCADE, related_name="auth_token")
+    created_at = models.DateTimeField(auto_now_add=True)
