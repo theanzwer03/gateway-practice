@@ -11,6 +11,7 @@ class User(AbstractUser):
 
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     email = models.EmailField(unique=True)
+    email_verified = models.BooleanField(default=True)
     role = models.CharField(max_length=16, choices=Role.choices, default=Role.ADMIN, db_index=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)

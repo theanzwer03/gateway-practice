@@ -29,6 +29,8 @@ class ClientObtainAuthToken(ObtainAuthToken):
         serializer = self.get_serializer(data=request.data)
         serializer.is_valid(raise_exception=True)
         user = serializer.validated_data["user"]
+        if not user.email_verified:
+            return Response({"detail": "Verify your email before logging in."}, status=400)
         token, _ = Token.objects.get_or_create(user=user)
         client = getattr(user, "client_profile", None)
 
